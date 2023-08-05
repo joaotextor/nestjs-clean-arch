@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { UserEntity, UserProps } from "../../entities/user.entity";
+import { UserProps } from "../../entities/user.entity";
 
 type Props = {
   name?: string;
