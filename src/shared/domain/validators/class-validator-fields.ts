@@ -6,6 +6,7 @@ export abstract class ClassValidatorFields<ValidatedProps>
 {
   errors: FieldsError = null;
   validatedData: ValidatedProps = null;
+
   validate(data: any): boolean {
     const errors = validateSync(data);
 
