@@ -55,28 +55,28 @@ describe("UserEntity integration tests", () => {
       };
       expect(() => new UserEntity(props)).toThrowError(EntityValidationError);
     });
-    it("should throw an error when creating a user with invalid email", () => {
+    it("should throw an error when creating a user with invalid password", () => {
       props = {
         ...UserDataBuilder({}),
-        email: null,
+        password: null,
       };
       expect(() => new UserEntity(props)).toThrowError(EntityValidationError);
 
       props = {
         ...UserDataBuilder({}),
-        email: "",
+        password: "",
       };
       expect(() => new UserEntity(props)).toThrowError(EntityValidationError);
 
       props = {
         ...UserDataBuilder({}),
-        email: 10 as any,
+        password: 10 as any,
       };
       expect(() => new UserEntity(props)).toThrowError(EntityValidationError);
 
       props = {
         ...UserDataBuilder({}),
-        email: "a".repeat(256),
+        password: "a".repeat(101),
       };
       expect(() => new UserEntity(props)).toThrowError(EntityValidationError);
     });
