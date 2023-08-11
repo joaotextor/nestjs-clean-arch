@@ -4,6 +4,8 @@ import { EntityValidationError } from "@/shared/domain/validators/errors/validat
 
 describe("UserEntity integration tests", () => {
   let props: UserProps;
+  const entity = new UserEntity(UserDataBuilder({}));
+
   describe("Constructor method", () => {
     it("should throw an error when creating a user with invalid name", () => {
       props = {
@@ -108,7 +110,6 @@ describe("UserEntity integration tests", () => {
 
   describe("Update method", () => {
     it("should throw an error when updating a user with invalid name", () => {
-      const entity = new UserEntity(UserDataBuilder({}));
       expect(() => entity.update(null)).toThrowError(EntityValidationError);
       expect(() => entity.update("" as any)).toThrowError(
         EntityValidationError,
@@ -123,8 +124,29 @@ describe("UserEntity integration tests", () => {
 
     it("should be a valid user", () => {
       expect.assertions(0);
-      const entity = new UserEntity(UserDataBuilder({}));
       entity.update("new name");
+    });
+  });
+
+  describe("UpdatePassword method", () => {
+    it("should throw an error when updating a user with invalid password", () => {
+      expect(() => entity.updatePassword(null)).toThrowError(
+        EntityValidationError,
+      );
+      expect(() => entity.updatePassword("")).toThrowError(
+        EntityValidationError,
+      );
+      expect(() => entity.updatePassword(10 as any)).toThrowError(
+        EntityValidationError,
+      );
+      expect(() => entity.updatePassword("X".repeat(101))).toThrowError(
+        EntityValidationError,
+      );
+    });
+
+    it("should be a valid password", () => {
+      expect.assertions(0);
+      entity.updatePassword("newpassword");
     });
   });
 });
