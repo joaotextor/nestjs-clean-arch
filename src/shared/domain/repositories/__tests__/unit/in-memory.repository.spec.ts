@@ -45,4 +45,15 @@ describe("InMemoryRepository unit tests", () => {
     // Método sugerido pelo CodeWhisperer, que achei melhor, já que testa o próprio método, e não o resultado obtido pelo método em momento anterior do código
     await expect(sut.findById(sut.items[0].id)).resolves.toEqual(entity);
   });
+
+  it("Should return all entities", async () => {
+    const entity = new StubEntity({ name: "any_name", price: 10 });
+    await sut.insert(entity);
+    /* Método utilizado pelo professor
+     * const result = await sut.findById(entity._id);
+     * expect(entity.toJSON()).toStrictEqual(result.toJSON())
+     */
+    // Método sugerido pelo CodeWhisperer, que achei melhor, já que testa o próprio método, e não o resultado obtido pelo método em momento anterior do código
+    await expect(sut.findAll()).resolves.toEqual([entity]);
+  });
 });
