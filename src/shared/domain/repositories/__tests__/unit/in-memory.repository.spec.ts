@@ -49,11 +49,25 @@ describe("InMemoryRepository unit tests", () => {
   it("Should return all entities", async () => {
     const entity = new StubEntity({ name: "any_name", price: 10 });
     await sut.insert(entity);
-    /* Método utilizado pelo professor
-     * const result = await sut.findById(entity._id);
-     * expect(entity.toJSON()).toStrictEqual(result.toJSON())
-     */
-    // Método sugerido pelo CodeWhisperer, que achei melhor, já que testa o próprio método, e não o resultado obtido pelo método em momento anterior do código
     await expect(sut.findAll()).resolves.toEqual([entity]);
+  });
+
+  it("Should throw error when update when entity not found", async () => {
+    const entity = new StubEntity({ name: "any_name", price: 10 });
+
+    await expect(sut.update(entity)).rejects.toThrow(
+      new NotFoundError("Entity not found"),
+    );
+  });
+
+  it("Should update an entity", async () => {
+    const entity = new StubEntity({ name: "any_name", price: 10 });
+    await sut.insert(entity);
+    const entityUpdated = new StubEntity(
+      { name: "new_name", price: 20 },
+      entity._id,
+    );
+    await sut.update(entityUpdated);
+    expect(entityUpdated.toJSON()).toStrictEqual(sut.items[0].toJSON());
   });
 });
