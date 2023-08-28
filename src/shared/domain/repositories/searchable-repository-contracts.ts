@@ -84,7 +84,8 @@ export class SearchParams {
   }
 
   private set filter(value: string | null) {
-    this._filter = value === null || value === undefined ? null : `${value}`;
+    this._filter =
+      value === null || value === undefined || value === "" ? null : `${value}`;
   }
 }
 
