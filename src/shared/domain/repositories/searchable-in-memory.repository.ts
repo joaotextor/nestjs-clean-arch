@@ -1,13 +1,38 @@
 import { Entity } from "../entities/entity";
 import { InMemoryRepository } from "./in-memory.repository";
-import { SearchableRepositoryInterface } from "./searchable-repository-contracts";
+import {
+  SearchResult,
+  SearchableRepositoryInterface,
+} from "./searchable-repository-contracts";
 
 export abstract class SearchableInMemoryRepository<E extends Entity>
   extends InMemoryRepository<E>
   implements SearchableRepositoryInterface<E, any, any>
 {
-  async search(search: SearchParams): Promise<SearchResult<E>> {
-    throw new Error("Method not implemented.");
+  async search(props: SearchParams): Promise<SearchResult<E>> {
+    const itemsFiltered = await this.applyFilter(this.items, props.filter);
+
+    const itemsSorted = await this.applySorter(
+      itemsFiltered,
+      props.sort,
+      props.sortDir,
+    );
+
+    const itemsPaginated = await this.applyPaginate(
+      itemsSorted,
+      props.page,
+      props.perPage,
+    );
+
+    return new SearchResult({
+      items: itemsPaginated,
+      total: itemsFiltered.length,
+      currentPage: props.page,
+      perPage: props.perPage,
+      sort: props.sort,
+      sortDir: props.sortDir,
+      filter: props.filter,
+    });
   }
 
   protected abstract applyFilter(
@@ -19,7 +44,7 @@ export abstract class SearchableInMemoryRepository<E extends Entity>
     items: E[],
     sort: string | null,
     sortDir: string | null,
-  ): Promise<E[]>; {}
+  ): Promise<E[]> {}
 
   protected async applyPaginate(
     items: E[],
