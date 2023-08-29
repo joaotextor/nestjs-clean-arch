@@ -1,4 +1,7 @@
-import { SearchParams } from "../../searchable-repository-contracts";
+import {
+  SearchParams,
+  SearchResult,
+} from "../../searchable-repository-contracts";
 
 describe("Searchable Repository unit tests", () => {
   describe("SearchParams tests", () => {
@@ -144,6 +147,83 @@ describe("Searchable Repository unit tests", () => {
         expect(new SearchParams({ filter: param.filter as any }).filter).toBe(
           param.expected,
         );
+      });
+    });
+  });
+
+  describe("SearchResult tests", () => {
+    describe("Constructor props", () => {
+      let sut = new SearchResult({
+        items: ["test1", "test2", "test3", "test4"] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 2,
+        sort: null,
+        sortDir: null,
+        filter: null,
+      });
+      it("Should create a result with given params and without sort params", () => {
+        expect(sut.toJSON()).toStrictEqual({
+          items: ["test1", "test2", "test3", "test4"] as any,
+          total: 4,
+          currentPage: 1,
+          lastPage: 2,
+          perPage: 2,
+          sort: null,
+          sortDir: null,
+          filter: null,
+        });
+      });
+
+      it("Should create a result with given params and without sort params", () => {
+        sut = new SearchResult({
+          items: ["test1", "test2", "test3", "test4"] as any,
+          total: 4,
+          currentPage: 1,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: "test",
+        });
+
+        expect(sut.toJSON()).toStrictEqual({
+          items: ["test1", "test2", "test3", "test4"] as any,
+          total: 4,
+          currentPage: 1,
+          lastPage: 2,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: "test",
+        });
+      });
+
+      test("lastPage should result 1 if perPage is greater than total results", () => {
+        sut = new SearchResult({
+          items: ["test1", "test2", "test3", "test4"] as any,
+          total: 4,
+          currentPage: 1,
+          perPage: 10,
+          sort: "name",
+          sortDir: "desc",
+          filter: "test",
+        });
+
+        expect(sut.lastPage).toBe(1);
+      });
+
+      test("lastPage should result next interger number when dividing", () => {
+        sut = new SearchResult({
+          items: ["test1", "test2", "test3", "test4"] as any,
+          total: 54,
+          currentPage: 1,
+          perPage: 10,
+          sort: "name",
+          sortDir: "desc",
+          filter: "test",
+        });
+
+        expect(sut.lastPage).toBe(6);
       });
     });
   });
