@@ -14,7 +14,7 @@ export abstract class SearchableInMemoryRepository<E extends Entity>
   async search(props: SearchParams): Promise<SearchResult<E>> {
     const itemsFiltered = await this.applyFilter(this.items, props.filter);
 
-    const itemsSorted = await this.applySorter(
+    const itemsSorted = await this.applySort(
       itemsFiltered,
       props.sort,
       props.sortDir,
@@ -42,7 +42,7 @@ export abstract class SearchableInMemoryRepository<E extends Entity>
     filter: string | null,
   ): Promise<E[]>;
 
-  protected async applySorter(
+  protected async applySort(
     items: E[],
     sort: string | null,
     sortDir: string | null,
@@ -55,7 +55,7 @@ export abstract class SearchableInMemoryRepository<E extends Entity>
         return sortDir === "asc" ? -1 : 1;
       }
 
-      if (a.props[sort] < b.props[sort]) {
+      if (a.props[sort] > b.props[sort]) {
         return sortDir === "asc" ? 1 : -1;
       }
 

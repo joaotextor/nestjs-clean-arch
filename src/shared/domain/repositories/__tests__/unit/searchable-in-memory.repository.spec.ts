@@ -84,7 +84,50 @@ describe("SearchableInMemoryRepository unit tests", () => {
     });
   });
 
-  // describe("applySort method", () => {});
+  describe("applySort method", () => {
+    it("Should not sort items", async () => {
+      const items = [
+        new StubEntity({
+          name: "b",
+          price: 50,
+        }),
+        new StubEntity({
+          name: "a",
+          price: 30,
+        }),
+      ];
+
+      let itemsSorted = await sut["applySort"](items, null, null);
+      expect(itemsSorted).toStrictEqual(items);
+
+      //Sort by "price" not allowed. Should return the same items.
+      itemsSorted = await sut["applySort"](items, "price", "asc");
+      expect(itemsSorted).toStrictEqual(items);
+    });
+
+    it("Should sort items", async () => {
+      const items = [
+        new StubEntity({
+          name: "b",
+          price: 50,
+        }),
+        new StubEntity({
+          name: "a",
+          price: 30,
+        }),
+        new StubEntity({
+          name: "c",
+          price: 90,
+        }),
+      ];
+
+      let itemsSorted = await sut["applySort"](items, "name", "asc");
+      expect(itemsSorted).toStrictEqual([items[1], items[0], items[2]]);
+
+      itemsSorted = await sut["applySort"](items, "name", "desc");
+      expect(itemsSorted).toStrictEqual([items[2], items[0], items[1]]);
+    });
+  });
 
   // describe("applyPaginate method", () => {});
 
