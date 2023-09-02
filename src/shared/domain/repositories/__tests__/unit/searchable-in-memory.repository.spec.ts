@@ -1,5 +1,9 @@
 import { Entity } from "@/shared/domain/entities/entity";
 import { SearchableInMemoryRepository } from "../../searchable-in-memory.repository";
+import {
+  SearchParams,
+  SearchResult,
+} from "../../searchable-repository-contracts";
 
 type StubEntityData = {
   name: string;
@@ -177,5 +181,83 @@ describe("SearchableInMemoryRepository unit tests", () => {
     });
   });
 
-  // describe("search method", () => {});
+  describe("search method", () => {
+    it("Should apply only pagination when the other params are null", async () => {
+      const entity = new StubEntity({ name: "any_name", price: 50 });
+      const items = Array(16).fill(entity);
+      sut.items = items;
+
+      const params = await sut.search(new SearchParams());
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: Array(15).fill(entity),
+          total: 16,
+          currentPage: 1,
+          perPage: 15,
+          sort: null,
+          sortDir: null,
+          filter: null,
+        }),
+      );
+    });
+    it("Should apply pagination and filter", async () => {
+      const items = [
+        new StubEntity({
+          name: "test",
+          price: 50,
+        }),
+        new StubEntity({
+          name: "a",
+          price: 30,
+        }),
+        new StubEntity({
+          name: "TEST",
+          price: 90,
+        }),
+        new StubEntity({
+          name: "TeSt",
+          price: 90,
+        }),
+      ];
+      sut.items = items;
+
+      let params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          filter: "TEST",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[0], items[2]],
+          total: 3,
+          currentPage: 1,
+          perPage: 2,
+          sort: null,
+          sortDir: null,
+          filter: "TEST",
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          filter: "TEST",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[3]],
+          total: 3,
+          currentPage: 2,
+          perPage: 2,
+          sort: null,
+          sortDir: null,
+          filter: "TEST",
+        }),
+      );
+    });
+  });
 });
