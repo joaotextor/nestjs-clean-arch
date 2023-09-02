@@ -200,6 +200,7 @@ describe("SearchableInMemoryRepository unit tests", () => {
         }),
       );
     });
+
     it("Should apply pagination and filter", async () => {
       const items = [
         new StubEntity({
@@ -255,6 +256,217 @@ describe("SearchableInMemoryRepository unit tests", () => {
           perPage: 2,
           sort: null,
           sortDir: null,
+          filter: "TEST",
+        }),
+      );
+    });
+
+    it("Should apply pagination and sort", async () => {
+      const items = [
+        new StubEntity({
+          name: "b",
+          price: 50,
+        }),
+        new StubEntity({
+          name: "a",
+          price: 30,
+        }),
+        new StubEntity({
+          name: "d",
+          price: 90,
+        }),
+        new StubEntity({
+          name: "e",
+          price: 90,
+        }),
+        new StubEntity({
+          name: "c",
+          price: 90,
+        }),
+      ];
+      sut.items = items;
+
+      //~ "DESC"
+      let params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          sort: "name",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[3], items[2]],
+          total: 5,
+          currentPage: 1,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: null,
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          sort: "name",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[4], items[0]],
+          total: 5,
+          currentPage: 2,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: null,
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 3,
+          perPage: 2,
+          sort: "name",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[1]],
+          total: 5,
+          currentPage: 3,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: null,
+        }),
+      );
+
+      //~ "ASC"
+      params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[1], items[0]],
+          total: 5,
+          currentPage: 1,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+          filter: null,
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[4], items[2]],
+          total: 5,
+          currentPage: 2,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+          filter: null,
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 3,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[3]],
+          total: 5,
+          currentPage: 3,
+          perPage: 2,
+          sort: "name",
+          sortDir: "asc",
+          filter: null,
+        }),
+      );
+    });
+
+    it("Should apply pagination, sort and filter", async () => {
+      const items = [
+        new StubEntity({
+          name: "test",
+          price: 50,
+        }),
+        new StubEntity({
+          name: "a",
+          price: 30,
+        }),
+        new StubEntity({
+          name: "TEST",
+          price: 90,
+        }),
+        new StubEntity({
+          name: "e",
+          price: 90,
+        }),
+        new StubEntity({
+          name: "TeSt",
+          price: 90,
+        }),
+      ];
+      sut.items = items;
+
+      let params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          sort: "name",
+          filter: "TEST",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[0], items[4]],
+          total: 3,
+          currentPage: 1,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
+          filter: "TEST",
+        }),
+      );
+
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          sort: "name",
+          filter: "TEST",
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[2]],
+          total: 3,
+          currentPage: 2,
+          perPage: 2,
+          sort: "name",
+          sortDir: "desc",
           filter: "TEST",
         }),
       );
