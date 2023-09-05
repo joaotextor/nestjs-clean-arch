@@ -65,4 +65,85 @@ describe("UserInMemoryRepository unit tests", () => {
       expect(itemsFiltered).toStrictEqual([items[0], items[1], items[2]]);
     });
   });
+
+  describe("applySort method", () => {
+    it("Should sort by createdAt and sortDir desc when sort is null", async () => {
+      const createdAt = new Date();
+      const items = [
+        new UserEntity(
+          UserDataBuilder({ createdAt: new Date(createdAt.getTime() + 1000) }),
+        ),
+        new UserEntity(
+          UserDataBuilder({ createdAt: new Date(createdAt.getTime() + 500) }),
+        ),
+        new UserEntity(
+          UserDataBuilder({ createdAt: new Date(createdAt.getTime()) }),
+        ),
+        new UserEntity(
+          UserDataBuilder({ createdAt: new Date(createdAt.getTime() + 2000) }),
+        ),
+      ];
+
+      const itemsSorted = await sut["applySort"](items, null, null);
+
+      const expected = [items[3], items[0], items[1], items[2]];
+      expect(itemsSorted).toStrictEqual(expected);
+    });
+    it("Should sort by createdAt and sortDir asc", async () => {
+      const createdAt = new Date();
+      const items = [
+        new UserEntity(
+          UserDataBuilder({
+            createdAt: new Date(createdAt.getTime() + 1000),
+          }),
+        ),
+        new UserEntity(
+          UserDataBuilder({
+            createdAt: new Date(createdAt.getTime() + 500),
+          }),
+        ),
+        new UserEntity(
+          UserDataBuilder({ createdAt: new Date(createdAt.getTime()) }),
+        ),
+        new UserEntity(
+          UserDataBuilder({
+            createdAt: new Date(createdAt.getTime() + 2000),
+          }),
+        ),
+      ];
+
+      const itemsSorted = await sut["applySort"](items, "createdAt", "asc");
+
+      const expected = [items[2], items[1], items[0], items[3]];
+      expect(itemsSorted).toStrictEqual(expected);
+    });
+
+    it("Should sort by name and sortDir desc when sortDir is null", async () => {
+      const items = [
+        new UserEntity(UserDataBuilder({ name: "b" })),
+        new UserEntity(UserDataBuilder({ name: "c" })),
+        new UserEntity(UserDataBuilder({ name: "a" })),
+        new UserEntity(UserDataBuilder({ name: "d" })),
+      ];
+
+      const expected = [items[3], items[1], items[0], items[2]];
+
+      const itemsSorted = await sut["applySort"](items, "name", null);
+      expect(itemsSorted).toStrictEqual(expected);
+    });
+
+    it("Should sort by name and sortDir asc", async () => {
+      const items = [
+        new UserEntity(UserDataBuilder({ name: "b" })),
+        new UserEntity(UserDataBuilder({ name: "c" })),
+        new UserEntity(UserDataBuilder({ name: "a" })),
+        new UserEntity(UserDataBuilder({ name: "d" })),
+      ];
+
+      const expected = [items[2], items[0], items[1], items[3]];
+
+      const itemsSorted = await sut["applySort"](items, "name", "asc");
+      expect(itemsSorted).toStrictEqual(expected);
+    });
+  });
 });
