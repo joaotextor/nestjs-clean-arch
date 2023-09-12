@@ -30,15 +30,6 @@ export namespace SignupUseCase {
         throw new BadRequestError("Input data not provided!");
       }
 
-      /**
-       * ! -------------------------------------------
-       * ! Ao meu ver, a linha abaixo NÃO vai funcionar!
-       * ! O UserRepository.Repository é uma interface.
-       * ! A Classe que implementa essa interface é a
-       * ! UserInMemoryRepository, que está em
-       * ! database/in-memory/repositories.
-       * ! -------------------------------------------
-       */
       await this.userRepository.emailExists(email);
       const hashPassword = await this.hashProvider.generateHash(password);
 
