@@ -17,7 +17,7 @@ export type SearchResultProps<E extends Entity, Filter> = {
   currentPage: number;
   perPage: number;
   sort: string | null;
-  sortDir: string | null;
+  sortDir: SortDirection | null;
   filter: Filter | null;
 };
 
