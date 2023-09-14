@@ -1,20 +1,12 @@
 import { UserRepository } from "@/users/domain/repositories/user.repository";
-import { BadRequestError } from "../errors/bad-request-error";
-import { UserEntity } from "@/users/domain/entities/user.entity";
-import { HashProvider } from "@/shared/application/providers/hash-provider";
+import { UserOutput } from "../dto/user-output";
 
 export namespace GetUserUseCase {
   export type Input = {
     id: string;
   };
 
-  export type Output = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-  };
+  export type Output = UserOutput;
 
   export class UseCase {
     constructor(private userRepository: UserRepository.Repository) {}
