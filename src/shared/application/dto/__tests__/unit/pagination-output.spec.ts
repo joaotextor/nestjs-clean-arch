@@ -1,7 +1,5 @@
 import { SearchResult } from "@/shared/domain/repositories/searchable-repository-contracts";
 import { PaginationOutputMapper } from "../../pagination-output";
-import { UserEntity } from "@/users/domain/entities/user.entity";
-import { UserDataBuilder } from "@/users/domain/testing/helpers/user-data-builder";
 
 describe("PaginationOutputMapper  unit tests", () => {
   it("Should return a PaginationOutput", () => {
