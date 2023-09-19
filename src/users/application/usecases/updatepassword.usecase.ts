@@ -36,7 +36,7 @@ export namespace UpdatePasswordUseCase {
       }
 
       const hashPassword = await this.hashProvider.generateHash(input.password);
-      entity.update(hashPassword);
+      entity.updatePassword(hashPassword);
       await this.userRepository.update(entity);
       return UserOutputMapper.toOutput(entity);
     }
