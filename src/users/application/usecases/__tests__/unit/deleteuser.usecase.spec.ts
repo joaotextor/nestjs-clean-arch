@@ -1,18 +1,16 @@
 import { UserInMemoryRepository } from "@/users/infrastructure/database/in-memory/repositories/user-in-memory.repository";
-import { SignupUseCase } from "../../signup.usecase";
-import { UserRepository } from "@/users/domain/repositories/user.repository";
-import { GetUserUseCase } from "../../getuser.usecase";
 import { NotFoundError } from "@/shared/domain/errors/not-found-error";
 import { UserDataBuilder } from "@/users/domain/testing/helpers/user-data-builder";
 import { UserEntity } from "@/users/domain/entities/user.entity";
+import { DeleteUserUseCase } from "../../deleteuser.usecase";
 
 describe("GetUserUseCase unit tests", () => {
-  let sut: GetUserUseCase.UseCase;
+  let sut: DeleteUserUseCase.UseCase;
   let repository: UserInMemoryRepository;
 
   beforeEach(() => {
     repository = new UserInMemoryRepository();
-    sut = new GetUserUseCase.UseCase(repository);
+    sut = new DeleteUserUseCase.UseCase(repository);
   });
 
   it("Should throw error when entity not found", async () => {
@@ -21,13 +19,14 @@ describe("GetUserUseCase unit tests", () => {
     );
   });
 
-  it("Should return user entity using id", async () => {
-    const spyFindById = jest.spyOn(repository, "findById");
+  it("Should successfully delete user entity using id", async () => {
+    const spyDelete = jest.spyOn(repository, "delete");
     const items = [new UserEntity(UserDataBuilder({}))];
     repository.items = items;
+    expect(repository.items).toHaveLength(1);
 
-    const result = await sut.execute({ id: items[0]._id });
-    expect(spyFindById).toHaveBeenCalledTimes(1);
-    expect(result).toMatchObject(items[0].toJSON());
+    await sut.execute({ id: items[0]._id });
+    expect(spyDelete).toHaveBeenCalledTimes(1);
+    expect(repository.items).toHaveLength(0);
   });
 });

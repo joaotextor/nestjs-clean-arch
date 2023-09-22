@@ -1,6 +1,4 @@
 import { UserInMemoryRepository } from "@/users/infrastructure/database/in-memory/repositories/user-in-memory.repository";
-import { SignupUseCase } from "../../signup.usecase";
-import { UserRepository } from "@/users/domain/repositories/user.repository";
 import { GetUserUseCase } from "../../getuser.usecase";
 import { NotFoundError } from "@/shared/domain/errors/not-found-error";
 import { UserDataBuilder } from "@/users/domain/testing/helpers/user-data-builder";
