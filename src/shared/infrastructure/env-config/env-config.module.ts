@@ -4,7 +4,9 @@ import { ConfigModule, ConfigModuleOptions } from "@nestjs/config";
 import { join } from "node:path";
 
 @Module({
+  imports: [ConfigModule],
   providers: [EnvConfigService],
+  exports: [EnvConfigModule],
 })
 /*
  * Create a class based on the ConfigModule class from nest.js
