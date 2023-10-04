@@ -9,6 +9,7 @@ import { DatabaseModule } from "@/shared/infrastructure/database/database.module
 import { PrismaService } from "@/shared/infrastructure/database/prisma/prisma.service";
 import { NotFoundError } from "@/shared/domain/errors/not-found-error";
 import { UserDataBuilder } from "@/users/domain/testing/helpers/user-data-builder";
+import { isEntityName } from "typescript";
 
 describe("UserModelMapper integration tests", () => {
   const prismaService = new PrismaClient();
@@ -32,18 +33,35 @@ describe("UserModelMapper integration tests", () => {
     await prismaService.$disconnect();
   });
 
-  it("should throw error when entity not found", () => {
-    expect(() => sut.findById("fake-id")).rejects.toThrow(
-      new NotFoundError("UserModel not found using id fake-id"),
-    );
-  });
-  it("should find an entity by id", async () => {
-    const entity = new UserEntity(UserDataBuilder({}));
-    const newUser = await prismaService.user.create({
-      data: entity.toJSON(),
+  describe("findById method", () => {
+    it("should throw error when entity not found", () => {
+      expect(() => sut.findById("fake-id")).rejects.toThrow(
+        new NotFoundError("UserModel not found using id fake-id"),
+      );
     });
+    it("should find an entity by id", async () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      const newUser = await prismaService.user.create({
+        data: entity.toJSON(),
+      });
 
-    const output = await sut.findById(newUser.id);
-    expect(output.toJSON).toStrictEqual(entity.toJSON);
+      const output = await sut.findById(newUser.id);
+      expect(output.toJSON).toStrictEqual(entity.toJSON);
+    });
+  });
+
+  describe("insert method", () => {
+    it("should insert a new entity", async () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      await sut.insert(entity);
+
+      const result = await prismaService.user.findUnique({
+        where: {
+          id: entity._id,
+        },
+      });
+
+      expect(result).toStrictEqual(entity.toJSON());
+    });
   });
 });
