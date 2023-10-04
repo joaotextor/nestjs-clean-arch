@@ -51,7 +51,7 @@ describe("UserModelMapper integration tests", () => {
   });
 
   describe("insert method", () => {
-    it("should insert a new entity", async () => {
+    it("should return all users", async () => {
       const entity = new UserEntity(UserDataBuilder({}));
       await sut.insert(entity);
 
@@ -62,6 +62,26 @@ describe("UserModelMapper integration tests", () => {
       });
 
       expect(result).toStrictEqual(entity.toJSON());
+    });
+  });
+  describe("findAll method", () => {
+    it("should insert a new entity", async () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      const newUser = await prismaService.user.create({
+        data: entity.toJSON(),
+      });
+
+      const entities = await sut.findAll();
+
+      expect(entities).toHaveLength(1);
+
+      expect(JSON.stringify(entities)).toBe(JSON.stringify([entity]));
+
+      /** Same as above
+       * entities.map((item) => {
+       *   expect(item.toJSON).toStrictEqual(entity.toJSON);
+       * });
+       */
     });
   });
 });
