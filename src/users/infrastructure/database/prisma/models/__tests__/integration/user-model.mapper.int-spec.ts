@@ -1,6 +1,5 @@
 import { ValidationError } from "@/shared/domain/errors/validation-error";
 import { PrismaClient, User } from "@prisma/client";
-import { execSync } from "node:child_process";
 import { UserModelMapper } from "../../user-model.mapper";
 import { UserEntity } from "@/users/domain/entities/user.entity";
 import { setupPrismaTests } from "@/shared/infrastructure/database/prisma/testing/setup-prisma-tests";
