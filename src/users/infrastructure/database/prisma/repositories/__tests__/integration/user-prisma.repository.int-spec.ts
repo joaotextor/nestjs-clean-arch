@@ -169,4 +169,32 @@ describe("UserModelMapper integration tests", () => {
       );
     });
   });
+
+  describe("update method", () => {
+    it("should throw error on update when entity not found", () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      expect(() => sut.update(entity)).rejects.toThrow(
+        new NotFoundError(`UserModel not found using id ${entity._id}`),
+      );
+    });
+
+    it("should update an entity", async () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      const newUser = await prismaService.user.create({
+        data: entity.toJSON(),
+      });
+
+      entity.update("new name");
+
+      await sut.update(entity);
+
+      const output = await prismaService.user.findUnique({
+        where: {
+          id: entity._id,
+        },
+      });
+
+      expect(output.name).toBe("new name");
+    });
+  });
 });
