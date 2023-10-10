@@ -197,4 +197,29 @@ describe("UserModelMapper integration tests", () => {
       expect(output.name).toBe("new name");
     });
   });
+  describe("delete method", () => {
+    it("should throw error on update when entity not found", () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      expect(() => sut.delete(entity._id)).rejects.toThrow(
+        new NotFoundError(`UserModel not found using id ${entity._id}`),
+      );
+    });
+
+    it("should delete an entity", async () => {
+      const entity = new UserEntity(UserDataBuilder({}));
+      const newUser = await prismaService.user.create({
+        data: entity.toJSON(),
+      });
+
+      await sut.delete(entity._id);
+
+      const output = await prismaService.user.findUnique({
+        where: {
+          id: entity._id,
+        },
+      });
+
+      expect(output).toBeNull();
+    });
+  });
 });
