@@ -53,8 +53,8 @@ describe("UserEntity unit tests", () => {
     expect(sut.name).toEqual("new name");
   });
   it("Should update password", () => {
-    sut.update("new password");
+    sut.updatePassword("new password");
     expect(UserEntity.validate).toHaveBeenCalled();
-    expect(sut.name).toEqual("new password");
+    expect(sut.password).toEqual("new password");
   });
 });

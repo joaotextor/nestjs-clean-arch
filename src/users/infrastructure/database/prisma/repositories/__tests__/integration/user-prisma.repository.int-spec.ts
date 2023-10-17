@@ -13,7 +13,7 @@ import { isEntityName } from "typescript";
 import { UserRepository } from "@/users/domain/repositories/user.repository";
 import { ConflictError } from "@/shared/domain/errors/conflict-error";
 
-describe("UserModelMapper integration tests", () => {
+describe("UserPrismaRepository integration tests", () => {
   const prismaService = new PrismaClient();
   let sut: UserPrismaRepository;
   let module: TestingModule;
