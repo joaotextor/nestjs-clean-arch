@@ -1,5 +1,6 @@
 import { UserOutput } from "@/users/application/dto/user-output";
 import { Transform } from "class-transformer";
+
 export class UserPresenter {
   id: string;
   name: string;
